@@ -14,6 +14,8 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  it { should respond_to(:remember_token) }
+  it { should respond_to(:authenticate) }
 
   it { should be_valid }
 
@@ -76,9 +78,6 @@ describe User do
     it { should_not be_valid }
   end
 
-it { should respond_to(:authenticate) }
-
-
   describe "return value of authenticate method" do
     before { @user.save }
     let(:found_user) { User.find_by(email: @user.email) }
@@ -96,8 +95,12 @@ it { should respond_to(:authenticate) }
   end
 
   describe "with a password that's too short" do
-  before { @user.password = @user.password_confirmation = "a" * 5 }
-  it { should be_invalid }
-end
+    before { @user.password = @user.password_confirmation = "a" * 5 }
+    it { should be_invalid }
+  end
 
+  describe "remember token" do
+    before { @user.save }
+    its(:remember_token) { should_not be_blank }
+  end
 end
